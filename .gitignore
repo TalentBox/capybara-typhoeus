@@ -1,0 +1,8 @@
+.DS_Store
+.bundle
+*.tmproj
+tmtags
+coverage
+rdoc
+pkg
+.rvmrc
