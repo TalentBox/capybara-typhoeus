@@ -74,7 +74,6 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     when "text/html"
       html
     else
-      # $stdout.puts "response: #{response.inspect}"
       raise "Content-Type: #{content_type} is not handling xpath search"
     end.xpath(selector).map { |node| Node.new(self, node) }
   end
@@ -88,11 +87,10 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   end
   
   def json
-    @json ||= ActiveSupport::JSON.decode body
+    @json ||= Yajl::Parser.parse body
   end
   
   def body
-    # $stdout.puts "body: #{response.body}"
     response.body
   end
   alias_method :source, :body
@@ -132,8 +130,6 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       :timeout => 100,
     }
     opts[method==:get ? :params : :body] = params
-    # $stdout.puts "current_uri: #{@current_uri}"
-    # $stdout.puts "opts: #{opts.inspect}"
     request = Typhoeus::Request.new @current_uri, opts
     client.queue request
     client.run
