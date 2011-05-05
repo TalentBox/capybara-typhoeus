@@ -1,47 +1,31 @@
-Capybara-restfulie
+Capybara-typhoeus
 ==================
 
-This gems makes it possible to use [Faraday](http://github.com/technoweenie/faraday) for remote testing.
+This gems makes it possible to use [Typhoeus](https://github.com/dbalatero/typhoeus) for remote testing.
 
 This gem is a [Capybara](http://github.com/jnicklas/capybara) extension. The structure of the gem is taken from the work done on [Capybara-mechanize](http://github.com/jeroenvandijk/capybara-mechanize).
 
 ### Installation
 
-    gem install capybara-faraday
+    gem install capybara-typhoeus
 
 ### Usage without Cucumber
 
-    require 'capybara/faraday'
+    require 'capybara/typhoeus'
 
 ### Usage with Cucumber and tags
 
-A @faraday tag is added to your hooks when you add the following line to your env.rb
+A @typhoeus tag is added to your hooks when you add the following line to your env.rb
 
-    require 'capybara/faraday/cucumber'
+    require 'capybara/typhoeus/cucumber'
 
-The following scenario will then be using the Faraday driver
+The following scenario will then be using the Typhoeus driver
 
-    @faraday
+    @typhoeus
     Scenario: do something with the API
       Given I send and accept JSON
       When I send a GET request to /users
-      
-If you want to use a specific faraday supported adapter, you need to install the dependency and then specify the tag matching it:
 
-To use Typhoeus
-
-    @faraday_typhoeus
-    Scenario: do something with the API
-      Given I send and accept JSON
-      When I send a GET request to /users
-    
-To use Patron
-
-    @faraday_patron
-    Scenario: do something with the API
-      Given I send and accept JSON
-      When I send a GET request to /users    
-      
 ### Remote testing
 
 When you want to use this driver to test a remote application. You have to set the app_host:
