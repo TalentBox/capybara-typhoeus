@@ -134,6 +134,12 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     client.queue request
     client.run
     @response = request.response
+    if @response.timed_out?
+      $stderr.puts "#{method.to_s.upcase} #{@current_uri}: time out"
+    elsif @response.code==0
+      $stderr.puts "#{method.to_s.upcase} #{@current_uri}: #{@response.curl_error_message}"
+    end
+    @response
   end
 
   def url(path)
