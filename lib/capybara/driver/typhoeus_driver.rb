@@ -7,7 +7,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     end
   end
 
-  attr_accessor :as, :follow
+  attr_writer :as, :with_headers, :with_params
   attr_reader :app, :rack_server, :options, :response
 
   def client
@@ -114,22 +114,31 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     reset_cache
   end
   
+  def reset_with!
+    @with_headers = {}
+    @with_params = {}
+  end
+  
   def as
     @as ||= "application/json"
   end
   
-  def with
-    @with ||= {}
+  def with_headers
+    @with_headers ||= {}
+  end
+
+  def with_params
+    @with_params ||= {}
   end
 
   def process(method, path, params = {}, headers = {})
     @current_uri = url path
     opts = {
       :method => method,
-      :headers => headers.merge("Content-Type" => as, "Accept" => as),
+      :headers => with_headers.merge(headers.merge("Content-Type" => as, "Accept" => as)),
       :timeout => 2000, # 2 seconds
     }
-    opts[method==:get ? :params : :body] = params
+    opts[method==:get ? :params : :body] = with_params.merge(params)
     request = Typhoeus::Request.new @current_uri, opts
     client.queue request
     client.run
