@@ -142,7 +142,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       opts[:params] = with_params.merge(params)
     else
       opts[:params] = with_params
-      opts[:body] = params
+      opts[:body] = params unless params=={}
     end
     request = Typhoeus::Request.new @current_uri, opts
     client.queue request
