@@ -138,7 +138,12 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       :headers => with_headers.merge(headers.merge("Content-Type" => as, "Accept" => as)),
       :timeout => 2000, # 2 seconds
     }
-    opts[method==:get ? :params : :body] = with_params.merge(params)
+    if method==:get
+      opts[:params] = with_params.merge(params)
+    else
+      opts[:params] = with_params
+      opts[:body] = params
+    end
     request = Typhoeus::Request.new @current_uri, opts
     client.queue request
     client.run
