@@ -7,7 +7,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     end
   end
 
-  attr_writer :as, :with_headers, :with_params
+  attr_writer :as, :with_headers, :with_params, :with_options
   attr_reader :app, :rack_server, :options, :response
 
   def client
@@ -109,6 +109,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   def reset_with!
     @with_headers = {}
     @with_params = {}
+    @with_options = {}
   end
   
   def as
@@ -120,6 +121,10 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   end
 
   def with_params
+    @with_params ||= {}
+  end
+
+  def with_options
     @with_params ||= {}
   end
 
@@ -136,7 +141,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       opts[:params] = with_params
       opts[:body] = params
     end
-    request = Typhoeus::Request.new @current_uri, opts
+    request = Typhoeus::Request.new @current_uri, with_options.merge(opts)
     client.queue request
     client.run
     @response = request.response
