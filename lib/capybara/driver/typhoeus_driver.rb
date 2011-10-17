@@ -1,7 +1,7 @@
 require "typhoeus"
 
 class Capybara::Driver::Typhoeus < Capybara::Driver::Base
-  class Node < Capybara::Driver::RackTest::Node
+  class Node < Capybara::RackTest::Node
     def click
       driver.process(:get, self[:href].to_s) if self[:href] && self[:href] != ""
     end
@@ -67,15 +67,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   end
 
   def find(selector)
-    content_type = response_headers["Content-Type"]
-    case content_type.to_s[/\A[^;]+/]
-    when "application/xml", "text/xml"
-      xml
-    when "text/html"
-      html
-    else
-      raise "Content-Type: #{content_type} is not handling xpath search"
-    end.xpath(selector).map { |node| Node.new(self, node) }
+    dom.xpath(selector).map { |node| Node.new(self, node) }
   end
   
   def html
@@ -158,6 +150,18 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
 
   def url(path)
     rack_server.url(path)
+  end
+
+  def dom
+    content_type = response_headers["Content-Type"]
+    case content_type.to_s[/\A[^;]+/]
+    when "application/xml", "text/xml"
+      xml
+    when "text/html"
+      html
+    else
+      raise "Content-Type: #{content_type} is not handling xpath search"
+    end
   end
 
 private
