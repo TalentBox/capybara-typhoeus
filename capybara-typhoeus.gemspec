@@ -2,10 +2,10 @@
 
 Gem::Specification.new do |s|
   s.name = %q{capybara-typhoeus}
-  s.version = "0.1.6"
+  s.version = "0.1.7"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
-  s.authors = ["Joseph HALTER"]
+  s.authors = ["Joseph HALTER", "Jonathan TRON"]
   s.date = %q{2011-04-22}
   s.summary = %q{Typhoeus driver for Capybara}
   s.description = %q{Typhoeus driver for Capybara, allowing testing of REST APIs}
