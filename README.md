@@ -54,8 +54,11 @@ Caveats
 The focus being to provide a working driver to test APIs, not all Capybara goodness are implemented.
 Everything related to submitting forms, clicking buttons, clicking checkboxes or javascript will not work with this driver.
 
-Todo
-----
+
+Build Status
+---------
+
+[![Build Status](http://travis-ci.org/TalentBox/capybara-typhoeus.png)](http://travis-ci.org/TalentBox/capybara-typhoeus)
 
 Note on Patches/Pull Requests
 -----------------------------
