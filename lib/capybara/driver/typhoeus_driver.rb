@@ -125,7 +125,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   end
 
   def with_options
-    @with_params ||= {}
+    @with_options ||= {}
   end
 
   def process(method, path, params = {}, headers = {})
