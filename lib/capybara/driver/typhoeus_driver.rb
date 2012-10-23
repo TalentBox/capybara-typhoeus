@@ -11,7 +11,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   attr_reader :app, :rack_server, :options, :response
 
   def client
-    @client ||= Typhoeus::Hydra.new(max_concurrency: 1)
+    @client ||= Typhoeus::Hydra.new
   end
 
   def initialize(app, options={})
@@ -134,6 +134,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       :method => method,
       :headers => with_headers.merge(headers.merge("Content-Type" => as, "Accept" => as)),
       :timeout => 2000, # 2 seconds
+      :forbid_reuse => true,
     }
     if params.is_a?(Hash)
       opts[:params] = with_params.merge(params)
