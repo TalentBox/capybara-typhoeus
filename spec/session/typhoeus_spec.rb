@@ -10,6 +10,14 @@ describe Capybara::Session do
       @session = TestSessions::Typhoeus
     end
 
+    after do
+      @session.reset_session!
+    end
+
+    def extract_results(session)
+      YAML.load Nokogiri::HTML(session.body).xpath("//pre[@id='results']").first.text
+    end
+
     describe '#driver' do
       it "should be a typhoeus driver" do
         @session.driver.should be_an_instance_of Capybara::Driver::Typhoeus
@@ -20,14 +28,6 @@ describe Capybara::Session do
       it "should remember the mode" do
         @session.mode.should == :typhoeus
       end
-    end
-
-    def extract_results(session)
-      YAML.load Nokogiri::HTML(session.body).xpath("//pre[@id='results']").first.text
-    end
-
-    after do
-      @session.reset!
     end
 
     describe '#app' do
@@ -66,7 +66,6 @@ describe Capybara::Session do
     it_should_behave_like "find_link"
     it_should_behave_like "find_by_id"
     it_should_behave_like "has_content"
-    it_should_behave_like "has_css"
     it_should_behave_like "has_css"
     it_should_behave_like "has_selector"
     it_should_behave_like "has_xpath"

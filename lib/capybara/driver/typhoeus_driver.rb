@@ -13,7 +13,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   def client
     @client ||= Typhoeus::Hydra.new
   end
-  
+
   def initialize(app, options={})
     @app = app
     @options = options
@@ -25,7 +25,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     reset_cache
     process :get, url, params
   end
-  
+
   def get(url, params = {}, headers = {})
     reset_cache
     process :get, url, params, headers
@@ -60,7 +60,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     reset_cache
     process :request, url, params, headers
   end
-  
+
   def submit(method, path, attributes)
     path = request.path if not path or path.empty?
     process method.to_sym, path, attributes
@@ -69,24 +69,24 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   def find(selector)
     dom.xpath(selector).map { |node| Node.new(self, node) }
   end
-  
+
   def html
     @html ||= Nokogiri::HTML body
   end
-  
+
   def xml
     @xml ||= Nokogiri::XML body
   end
-  
+
   def json
     @json ||= Yajl::Parser.parse body
   end
-  
+
   def body
     response.body
   end
   alias_method :source, :body
-  
+
   def response_headers
     response.headers_hash
   end
@@ -94,28 +94,28 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   def status_code
     response.code
   end
-  
+
   def current_url
     @current_uri.to_s
   end
-  
+
   def reset!
     @client = nil
     @response = nil
     @current_uri = nil
     reset_cache
   end
-  
+
   def reset_with!
     @with_headers = {}
     @with_params = {}
     @with_options = {}
   end
-  
+
   def as
     @as ||= "application/json"
   end
-  
+
   def with_headers
     @with_headers ||= {}
   end
@@ -144,8 +144,11 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     request = Typhoeus::Request.new @current_uri, with_options.merge(opts)
     client.queue request
     client.run
+    # $stdout.puts request.inspect
     @response = request.response
+    # $stdout.puts response.inspect
     if @response.timed_out?
+      `open #{@current_uri}`
       $stderr.puts "#{method.to_s.upcase} #{@current_uri}: time out"
     elsif @response.code==0
       $stderr.puts "#{method.to_s.upcase} #{@current_uri}: #{@response.curl_error_message}"

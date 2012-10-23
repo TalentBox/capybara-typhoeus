@@ -1,7 +1,7 @@
 require 'bundler/setup'
 require 'capybara'
 require 'capybara/typhoeus'
-require 'capybara/spec/extended_test_app'
+require 'capybara/spec/test_app'
 require 'capybara/spec/driver'
 require 'capybara/spec/session'
 

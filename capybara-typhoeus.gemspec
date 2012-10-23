@@ -16,8 +16,13 @@ Gem::Specification.new do |s|
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
-  
-  s.add_runtime_dependency(%q<capybara>, ["~> 1.1.1"])
-  s.add_runtime_dependency(%q<typhoeus>, ["~> 0.3.2"])
-  s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.0.0"])
+
+  s.add_runtime_dependency(%q<capybara>, ["~> 1.1.2"])
+  s.add_runtime_dependency(%q<typhoeus>, ["~> 0.3.3"])
+  s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.0"])
+
+  s.add_development_dependency "rake"
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "rack"
+  s.add_development_dependency "sinatra"
 end
