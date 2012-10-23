@@ -1,3 +1,5 @@
+require "capybara"
+
 module Capybara
   module Driver
     autoload :Typhoeus, 'capybara/driver/typhoeus_driver'
