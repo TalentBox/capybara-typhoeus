@@ -11,7 +11,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   attr_reader :app, :rack_server, :options, :response
 
   def client
-    @client ||= Typhoeus::Hydra.new
+    @client ||= Typhoeus::Hydra.new(max_concurrency: 1)
   end
 
   def initialize(app, options={})
