@@ -8,7 +8,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   end
 
   attr_writer :as, :with_headers, :with_params, :with_options
-  attr_reader :app, :rack_server, :options, :response
+  attr_reader :app, :rack_server, :options, :response, :login, :password
 
   def client
     @client ||= Typhoeus::Hydra.new
@@ -103,6 +103,8 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     @client = nil
     @response = nil
     @current_uri = nil
+    @login = nil
+    @password = nil
     reset_cache
   end
 
@@ -128,6 +130,14 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     @with_options ||= {}
   end
 
+  def authenticate_with(login, password)
+    @login, @password = login, password
+  end
+
+  def auth?
+    login && password
+  end
+
   def process(method, path, params = {}, headers = {})
     @current_uri = url path
     opts = {
@@ -136,6 +146,11 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       :timeout => 2000, # 2 seconds
       :forbid_reuse => true,
     }
+    opts.merge!({
+      :username => login,
+      :password => password,
+      :auth_method => :basic,
+    }) if auth?
     if params.is_a?(Hash)
       opts[:params] = with_params.merge(params)
     else
@@ -145,11 +160,8 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     request = Typhoeus::Request.new @current_uri, with_options.merge(opts)
     client.queue request
     client.run
-    # $stdout.puts request.inspect
     @response = request.response
-    # $stdout.puts response.inspect
     if @response.timed_out?
-      `open #{@current_uri}`
       $stderr.puts "#{method.to_s.upcase} #{@current_uri}: time out"
     elsif @response.code==0
       $stderr.puts "#{method.to_s.upcase} #{@current_uri}: #{@response.curl_error_message}"
