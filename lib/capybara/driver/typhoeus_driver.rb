@@ -143,7 +143,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     opts = {
       :method => method,
       :headers => with_headers.merge(headers.merge("Content-Type" => as, "Accept" => as)),
-      :timeout => 2000, # 2 seconds
+      :timeout => 2, # 2 seconds
       :forbid_reuse => true,
     }
     opts.merge!({
