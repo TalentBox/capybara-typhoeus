@@ -88,7 +88,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
   alias_method :source, :body
 
   def response_headers
-    response.headers_hash
+    response.headers
   end
 
   def status_code
