@@ -147,9 +147,8 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
       :forbid_reuse => true,
     }
     opts.merge!({
-      :username => login,
-      :password => password,
-      :auth_method => :basic,
+      :userpwd => "#{login}:#{password}",
+      :httpauth => :basic,
     }) if auth?
     if params.is_a?(Hash)
       opts[:params] = with_params.merge(params)
