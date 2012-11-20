@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    capybara-typhoeus (0.2.6)
+    capybara-typhoeus (0.2.7)
       capybara (~> 1.1.2)
       typhoeus (= 0.5.0)
       yajl-ruby (~> 1.0)
