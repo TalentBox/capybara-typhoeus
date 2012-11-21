@@ -16,7 +16,10 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
 
   def initialize(app, options={})
     @app = app
-    @options = options
+    @options = {
+      :timeout => 3, # 3 seconds
+      :forbid_reuse => true,
+    }.merge options
     @rack_server = Capybara::Server.new(@app)
     @rack_server.boot if Capybara.run_server
   end
@@ -143,9 +146,7 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     opts = {
       :method => method,
       :headers => with_headers.merge(headers.merge("Content-Type" => as, "Accept" => as)),
-      :timeout => 2, # 2 seconds
-      :forbid_reuse => true,
-    }
+    }.merge(options)
     opts.merge!({
       :userpwd => "#{login}:#{password}",
       :httpauth => :basic,
@@ -161,9 +162,9 @@ class Capybara::Driver::Typhoeus < Capybara::Driver::Base
     client.run
     @response = request.response
     if @response.timed_out?
-      $stderr.puts "#{method.to_s.upcase} #{@current_uri}: time out"
+      $stderr.puts "#{method.to_s.upcase} #{@current_uri}: time out" if $DEBUG
     elsif @response.code==0
-      $stderr.puts "#{method.to_s.upcase} #{@current_uri}: #{@response.curl_error_message}"
+      $stderr.puts "#{method.to_s.upcase} #{@current_uri}: #{@response.curl_error_message}" if $DEBUG
     end
     @response
   end
