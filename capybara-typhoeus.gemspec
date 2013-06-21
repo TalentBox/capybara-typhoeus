@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{capybara-typhoeus}
-  s.version = "0.2.11"
+  s.version = "0.2.12"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Joseph HALTER", "Jonathan TRON"]
@@ -17,9 +17,9 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.7}
 
-  s.add_runtime_dependency(%q<capybara>, ["~> 1.1.2"])
-  s.add_runtime_dependency(%q<typhoeus>, ["0.6.2"])
-  s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.0"])
+  s.add_runtime_dependency(%q<capybara>, ["~> 1.1.4"])
+  s.add_runtime_dependency(%q<typhoeus>, ["0.6.3"])
+  s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.1.0"])
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
