@@ -1,82 +1,72 @@
-require 'spec_helper'
+require "spec_helper"
 
-module TestSessions
-  Typhoeus = Capybara::Session.new :typhoeus, TestApp
+Capybara.register_driver :typhoeus_with_custom_timeout do |app|
+  Capybara::Typhoeus::Driver.new app, timeout: 1
 end
 
-describe Capybara::Session do
-  context 'with typhoeus driver' do
-    before(:all) do
-      @session = TestSessions::Typhoeus
-    end
+describe Capybara::Typhoeus::Session do
 
-    after do
-      @session.reset_session!
-    end
+  Capybara::SpecHelper.run_specs described_class.new(:typhoeus, TestApp), "Typhoeus", skip: [
+    :js,
+    :screenshot,
+    :frames,
+    :windows,
+    :server,
+    :hover
+  ]
 
-    def extract_results(session)
-      YAML.load Nokogiri::HTML(session.body).xpath("//pre[@id='results']").first.text
-    end
+  context "with typhoeus driver" do
+    context "basic authentication" do
+      subject do
+        app = Sinatra.new do
+          use Rack::Auth::Basic do |username, password|
+            username=="admin" && password=="secret"
+          end
+          get("/"){ "Success!" }
+        end
+        described_class.new :typhoeus, app
+      end
 
-    describe '#driver' do
-      it "should be a typhoeus driver" do
-        @session.driver.should be_an_instance_of Capybara::Driver::Typhoeus
+      it "allow access with right credentials" do
+        subject.authenticate_with "admin", "secret"
+        subject.get "/"
+        subject.status_code.should be 200
+        subject.source.should == "Success!"
+      end
+
+      it "deny access with wrong credentials" do
+        subject.authenticate_with "admin", "admin"
+        subject.get "/"
+        subject.status_code.should be 401
       end
     end
 
-    describe '#mode' do
-      it "should remember the mode" do
-        @session.mode.should == :typhoeus
+    context "timeout" do
+      context "default" do
+        subject{ described_class.new :typhoeus, TestApp }
+
+        it "is 3 seconds" do
+          subject.driver.options[:timeout].should == 3
+        end
+
+        it "is used during request" do
+          subject.get "/slow_response"
+          subject.should_not be_timed_out
+        end
+      end
+
+      context "accepts custom timeout" do
+        subject{ described_class.new :typhoeus_with_custom_timeout, TestApp }
+
+        it "is stored in options" do
+          subject.driver.options[:timeout].should == 1
+        end
+
+        it "is used during request" do
+          subject.get "/slow_response"
+          subject.should be_timed_out
+        end
       end
     end
-
-    describe '#app' do
-      it "should remember the application" do
-        @session.app.should == TestApp
-      end
-    end
-
-    describe '#visit' do
-      it "should fetch a response from the driver" do
-        @session.visit('/')
-        @session.body.should include('Hello world!')
-        @session.visit('/foo')
-        @session.body.should include('Another World')
-      end
-    end
-
-    describe '#body' do
-      it "should return the unmodified page body" do
-        @session.visit('/')
-        @session.body.should include('Hello world!')
-      end
-    end
-
-    describe '#source' do
-      it "should return the unmodified page source" do
-        @session.visit('/')
-        @session.source.should include('Hello world!')
-      end
-    end
-
-    it_should_behave_like "all"
-    it_should_behave_like "first"
-    it_should_behave_like "find_button"
-    it_should_behave_like "find_field"
-    it_should_behave_like "find_link"
-    it_should_behave_like "find_by_id"
-    it_should_behave_like "has_content"
-    it_should_behave_like "has_css"
-    it_should_behave_like "has_selector"
-    it_should_behave_like "has_xpath"
-    it_should_behave_like "has_link"
-    it_should_behave_like "has_button"
-    it_should_behave_like "has_field"
-    it_should_behave_like "has_select"
-    it_should_behave_like "has_table"
-    it_should_behave_like "current_url"
-    it_should_behave_like "session without javascript support"
-    it_should_behave_like "session with headers support"
-    it_should_behave_like "session with status code support"
   end
 end
