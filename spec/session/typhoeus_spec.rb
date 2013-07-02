@@ -16,6 +16,11 @@ describe Capybara::Typhoeus::Session do
   ]
 
   context "with typhoeus driver" do
+    it "should use Capybara::Typhoeus::Session" do
+      Capybara.current_driver = :typhoeus
+      Capybara.current_session.should be_instance_of described_class
+    end
+
     context "basic authentication" do
       subject do
         app = Sinatra.new do

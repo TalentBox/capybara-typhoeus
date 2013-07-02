@@ -8,7 +8,7 @@ module Capybara
     autoload :Session, "capybara/typhoeus/session"
   end
 
-  def current_session
+  def self.current_session
     key = "#{current_driver}:#{session_name}:#{app.object_id}"
     session_pool[key] ||= if current_driver==:typhoeus
       ::Capybara::Typhoeus::Session.new current_driver, app
