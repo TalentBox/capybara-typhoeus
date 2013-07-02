@@ -68,5 +68,21 @@ describe Capybara::Typhoeus::Session do
         end
       end
     end
+
+    context "#host_url returns url with scheme, host, port and path" do
+      subject{ described_class.new :typhoeus, TestApp }
+
+      it "with empty url" do
+        subject.host_url("").should =~ /\A#{Regexp.escape("http://127.0.0.1")}:\d+\z/
+      end
+
+      it "with relative url" do
+        subject.host_url("/demo/test").should =~ /\A#{Regexp.escape("http://127.0.0.1")}:\d+\/demo\/test\z/
+      end
+
+      it "with absolute url" do
+        subject.host_url("http://www.example.com:443/demo/test").should == "http://www.example.com:443/demo/test"
+      end
+    end
   end
 end
