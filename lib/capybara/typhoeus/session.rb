@@ -34,4 +34,12 @@ class Capybara::Typhoeus::Session < Capybara::Session
     url
   end
 
+  def request_body
+    driver.request_body
+  end
+
+  def request_body=(value)
+    driver.request_body = value
+  end
+
 end

@@ -80,4 +80,12 @@ class Capybara::Typhoeus::Driver < Capybara::RackTest::Driver
     browser.json
   end
 
+  def request_body
+    browser.request_body
+  end
+
+  def request_body=(value)
+    browser.request_body = value
+  end
+
 end

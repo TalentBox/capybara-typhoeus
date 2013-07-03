@@ -12,6 +12,7 @@ end
 
 class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
 
+  attr_accessor :request_body
   attr_reader :last_response, :client
 
   def initialize(driver)
@@ -75,11 +76,10 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
         opts[:httpauth] = :basic
         opts[:userpwd] = "#{driver.login}:#{driver.password}"
       end
-      if params.is_a? Hash
-        opts[:params] = driver.with_params.merge(params)
-      else
-        opts[:params] = driver.with_params
-        opts[:body] = params
+      opts[:params] = driver.with_params.merge(params)
+      if request_body
+        opts[:body] = request_body
+        @request_body = nil
       end
       request = Typhoeus::Request.new uri.to_s, opts
       client.queue request
