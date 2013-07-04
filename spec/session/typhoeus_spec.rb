@@ -51,7 +51,7 @@ describe Capybara::Typhoeus::Session do
 
       context "default" do
         it "is 3 seconds" do
-          subject.driver.options[:timeout].should == 3
+          subject.timeout.should == 3
         end
 
         it "is used during request" do
@@ -64,7 +64,7 @@ describe Capybara::Typhoeus::Session do
         subject{ described_class.new :typhoeus_with_custom_timeout, TestApp }
 
         it "is stored in options" do
-          subject.driver.options[:timeout].should == 1
+          subject.timeout.should == 1
         end
 
         it "is used during request" do

@@ -34,12 +34,20 @@ class Capybara::Typhoeus::Session < Capybara::Session
     url
   end
 
+  def timeout
+    driver.options[:timeout]
+  end
+
   def request_body
     driver.request_body
   end
 
   def request_body=(value)
     driver.request_body = value
+  end
+
+  def as=(value)
+    driver.as = value
   end
 
 end
