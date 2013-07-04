@@ -13,12 +13,7 @@ end
 class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
 
   attr_accessor :request_body
-  attr_reader :last_response, :client
-
-  def initialize(driver)
-    @client = Typhoeus::Hydra.new
-    super
-  end
+  attr_reader :last_response
 
   def reset_cache!
     @xml = nil
@@ -81,10 +76,7 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
         opts[:body] = request_body
         @request_body = nil
       end
-      request = Typhoeus::Request.new uri.to_s, opts
-      client.queue request
-      client.run
-      @last_response = request.response
+      @last_response = Typhoeus::Request.send method, uri.to_s, opts
       if last_response.timed_out?
         $stderr.puts "#{method.to_s.upcase} #{uri.to_s}: time out" if $DEBUG
       elsif last_response.code==0
