@@ -49,7 +49,7 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
   end
 
   def json
-    @json ||= Yajl::Parser.parse html
+    @json ||= JSON.parse html
   end
 
   [:get, :post, :put, :delete, :head, :patch, :request].each do |method|
