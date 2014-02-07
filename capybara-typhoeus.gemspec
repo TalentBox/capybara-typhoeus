@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
 
   s.add_runtime_dependency(%q<capybara>, ["~> 2.1.0"])
-  s.add_runtime_dependency(%q<typhoeus>, ["0.6.3"])
-  s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.1.0"])
+  s.add_runtime_dependency(%q<typhoeus>, ["0.6.7"])
+  s.add_runtime_dependency(%q<yajl-ruby>, ["~> 1.2.0"])
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
