@@ -35,7 +35,7 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
       if content_type.include? "/xml"
         xml
       else
-        Nokogiri::HTML html
+        Capybara::HTML html
       end
     end
   end
