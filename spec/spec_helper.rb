@@ -1,6 +1,7 @@
 require "bundler/setup"
 require "capybara/typhoeus"
 require "capybara/spec/spec_helper"
+require 'pry'
 
 module Capybara
   module SpecHelper

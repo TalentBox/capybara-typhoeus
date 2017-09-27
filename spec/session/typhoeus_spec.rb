@@ -4,16 +4,19 @@ Capybara.register_driver :typhoeus_with_custom_timeout do |app|
   Capybara::Typhoeus::Driver.new app, timeout: 1
 end
 
-describe Capybara::Typhoeus::Session do
+Capybara::SpecHelper.run_specs Capybara::Typhoeus::Session.new(:typhoeus, TestApp), "Typhoeus", capybara_skip: [
+  :js,
+  :screenshot,
+  :frames,
+  :windows,
+  :server,
+  :hover,
+  :modals,
+  :about_scheme,
+  :send_keys,
+]
 
-  Capybara::SpecHelper.run_specs described_class.new(:typhoeus, TestApp), "Typhoeus", skip: [
-    :js,
-    :screenshot,
-    :frames,
-    :windows,
-    :server,
-    :hover
-  ]
+describe Capybara::Typhoeus::Session do
 
   context "with typhoeus driver" do
     it "should use Capybara::Typhoeus::Session" do
