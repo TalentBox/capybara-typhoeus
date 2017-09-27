@@ -1,6 +1,9 @@
 rvm:
   - 2.3.3
-  - 2.2.0
-  - ruby-head
+  - 2.2.8
 notifications:
   disabled: true
+before_script:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sleep 3 # give xvfb some time to start  
