@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "capybara-typhoeus"
-  s.version = "0.4.0"
+  s.version = "0.4.1"
   s.authors = ["Joseph HALTER", "Jonathan TRON"]
   s.summary = "Typhoeus driver for Capybara"
   s.description = "Typhoeus driver for Capybara, allowing testing of REST APIs"
@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
   s.test_files = Dir.glob("spec/**/*")
 
   s.add_runtime_dependency "capybara", ["~> 2.8.0"]
-  s.add_runtime_dependency "typhoeus", ["0.6.7"]
+  s.add_runtime_dependency "typhoeus", [">= 0.6.7"]
 
   s.add_development_dependency "rake"
   s.add_development_dependency "rspec"
