@@ -58,7 +58,7 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
       opts = driver.with_options
       opts[:method] = method
       opts[:headers] = driver.with_headers.merge(
-        headers.merge("Content-Type" => driver.as, "Accept" => driver.as)
+        {"Content-Type" => driver.as, "Accept" => driver.as}.merge headers
       )
       referer = opts[:headers].delete "HTTP_REFERER"
       opts[:headers]["Referer"] = referer if referer
