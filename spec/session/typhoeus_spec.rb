@@ -45,10 +45,17 @@ end
 RSpec.describe Capybara::Typhoeus::Session do
 
   context "with typhoeus driver" do
+    before { Capybara.current_driver = :typhoeus }
     let(:session) { TestSessions::TyphoeusTest }
 
+    describe 'Capybara#current_session' do
+      it 'should be a typhoeus session' do
+        expect(Capybara.current_session).to be_an_instance_of(Capybara::Typhoeus::Session)
+      end
+    end
+
     describe '#driver' do
-      it 'should be a rack test driver' do
+      it 'should be a typhoeus driver' do
         expect(session.driver).to be_an_instance_of(Capybara::Typhoeus::Driver)
       end
     end
