@@ -55,7 +55,7 @@ RSpec.describe Capybara::Typhoeus::Session do
 
     describe '#mode' do
       it 'should remember the mode' do
-        expect(session.mode).to eq(:typhoeus)
+        expect( session.mode ).to eq(:typhoeus)
       end
     end
 
@@ -73,14 +73,14 @@ RSpec.describe Capybara::Typhoeus::Session do
       it "allow access with right credentials" do
         subject.authenticate_with "admin", "secret"
         subject.get "/"
-        subject.status_code.should be 200
-        subject.source.should == "Success!"
+        expect( subject.status_code ).to be 200
+        expect( subject.source ).to eq "Success!"
       end
 
       it "deny access with wrong credentials" do
         subject.authenticate_with "admin", "admin"
         subject.get "/"
-        subject.status_code.should be 401
+        expect( subject.status_code ).to be 401
       end
     end
 
@@ -89,12 +89,12 @@ RSpec.describe Capybara::Typhoeus::Session do
 
       context "default" do
         it "is 3 seconds" do
-          subject.timeout.should == 3
+          expect( subject.timeout ).to eq 3
         end
 
         it "is used during request" do
           subject.get "/slow_response"
-          subject.should_not be_timed_out
+          expect( subject ).not_to be_timed_out
         end
       end
 
@@ -102,12 +102,12 @@ RSpec.describe Capybara::Typhoeus::Session do
         subject{ described_class.new :typhoeus_with_custom_timeout, TestApp }
 
         it "is stored in options" do
-          subject.timeout.should == 1
+          expect( subject.timeout ).to eq 1
         end
 
         it "is used during request" do
           subject.get "/slow_response"
-          subject.should be_timed_out
+          expect( subject ).to be_timed_out
         end
       end
     end
@@ -116,15 +116,17 @@ RSpec.describe Capybara::Typhoeus::Session do
       subject{ described_class.new :typhoeus, TestApp }
 
       it "with empty url" do
-        subject.host_url("").should =~ /\A#{Regexp.escape("http://127.0.0.1")}:\d+\z/
+        expect( subject.host_url("") ).to match /\A#{Regexp.escape("http://127.0.0.1")}:\d+\z/
       end
 
       it "with relative url" do
-        subject.host_url("/demo/test").should =~ /\A#{Regexp.escape("http://127.0.0.1")}:\d+\/demo\/test\z/
+        expect( subject.host_url("/demo/test") ).to match /\A#{Regexp.escape("http://127.0.0.1")}:\d+\/demo\/test\z/
       end
 
       it "with absolute url" do
-        subject.host_url("http://www.example.com:443/demo/test").should == "http://www.example.com:443/demo/test"
+        expect(
+          subject.host_url("http://www.example.com:443/demo/test")
+        ).to eq "http://www.example.com:443/demo/test"
       end
     end
 
@@ -137,20 +139,20 @@ RSpec.describe Capybara::Typhoeus::Session do
       end
 
       it "body is nil be default" do
-        subject.request_body.should be_nil
+        expect( subject.request_body ).to be_nil
         subject.post "/"
-        subject.status_code.should be 200
-        subject.source.should == ""
+        expect( subject.status_code ).to be 200
+        expect( subject.source ).to eq ""
       end
 
       it "I can send data by setting the body" do
         body = "**raw file content**"
         subject.request_body = body
-        subject.request_body.should == body
+        expect( subject.request_body ).to eq body
         subject.post "/"
-        subject.status_code.should be 200
-        subject.source.should == body
-        subject.request_body.should be_nil
+        expect( subject.status_code ).to be 200
+        expect( subject.source ).to eq body
+        expect( subject.request_body ).to be_nil
       end
     end
   end
