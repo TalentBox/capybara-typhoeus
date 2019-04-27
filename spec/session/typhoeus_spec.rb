@@ -4,24 +4,59 @@ Capybara.register_driver :typhoeus_with_custom_timeout do |app|
   Capybara::Typhoeus::Driver.new app, timeout: 1
 end
 
-Capybara::SpecHelper.run_specs Capybara::Typhoeus::Session.new(:typhoeus, TestApp), "Typhoeus", capybara_skip: [
-  :js,
-  :screenshot,
-  :frames,
-  :windows,
-  :server,
-  :hover,
-  :modals,
-  :about_scheme,
-  :send_keys,
-]
+module TestSessions
+  TyphoeusTest = Capybara::Session.new(:typhoeus, TestApp)
+  TyphoeusTestCustomTimeout = Capybara::Session.new(:typhoeus_with_custom_timeout, TestApp)
+end
 
-describe Capybara::Typhoeus::Session do
+skipped_tests = %i[
+  js
+  modals
+  screenshot
+  frames
+  windows
+  send_keys
+  server
+  hover
+  about_scheme
+  download
+  css
+  scroll
+]
+Capybara::SpecHelper.run_specs TestSessions::TyphoeusTest, 'Typhoeus', capybara_skip: skipped_tests do |example|
+  case example.metadata[:full_description]
+  when /#attach_file/
+    skip "Typhoeus driver doesn't support #attach_file"
+  when /#check/
+    skip "Typhoeus driver doesn't support #check"
+  when /#uncheck/
+    skip "Typhoeus driver doesn't support #uncheck"
+  when /#click/
+    skip "Typhoeus driver doesn't support #click"
+  when /#select/
+    skip "Typhoeus driver doesn't support #select"
+  when /#unselect/
+    skip "Typhoeus driver doesn't support #unselect"
+  when /has_css\? should support case insensitive :class and :id options/
+    skip "Nokogiri doesn't support case insensitive CSS attribute matchers"
+  end
+end
+
+RSpec.describe Capybara::Typhoeus::Session do
 
   context "with typhoeus driver" do
-    it "should use Capybara::Typhoeus::Session" do
-      Capybara.current_driver = :typhoeus
-      Capybara.current_session.should be_instance_of described_class
+    let(:session) { TestSessions::TyphoeusTest }
+
+    describe '#driver' do
+      it 'should be a rack test driver' do
+        expect(session.driver).to be_an_instance_of(Capybara::Typhoeus::Driver)
+      end
+    end
+
+    describe '#mode' do
+      it 'should remember the mode' do
+        expect(session.mode).to eq(:typhoeus)
+      end
     end
 
     context "basic authentication" do

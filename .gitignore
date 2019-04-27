@@ -8,3 +8,4 @@ pkg
 .rvmrc
 *.gem
 Gemfile.lock
+save_path_tmp

@@ -4,6 +4,8 @@ module Typhoeus
       [301, 302, 303, 307].include? code
     end
 
+    alias_method :status, :code
+
     def [](key)
       headers[key]
     end
@@ -12,13 +14,25 @@ end
 
 class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
 
+  LastRequest = Struct.new(:method, :url, :params, :headers) do
+    def path
+      URI.parse(url).path
+    end
+  end
+
   attr_accessor :request_body
+  attr_reader :last_request
   attr_reader :last_response
 
   def reset_cache!
     @xml = nil
     @json = nil
     super
+  end
+
+  def refresh
+    reset_cache!
+    send(last_request.method, last_request.url, last_request.params, last_request.headers)
   end
 
   def current_url
@@ -54,6 +68,7 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
 
   [:get, :post, :put, :delete, :head, :patch, :request].each do |method|
     define_method(method) do |url, params={}, headers={}, &block|
+      @last_request = LastRequest.new(method, url, params, headers)
       uri = URI.parse url
       opts = driver.with_options
       opts[:method] = method
