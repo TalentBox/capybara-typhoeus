@@ -1,10 +1,11 @@
 class Capybara::Typhoeus::Driver < Capybara::RackTest::Driver
 
   attr_writer :as, :with_headers, :with_params, :with_options
-  attr_reader :login, :password
+  attr_reader :login, :password, :params_encoding
 
   def initialize(app, options = {})
     raise ArgumentError, "typhoeus requires a rack application, but none was given" unless app
+    @params_encoding = options[:params_encoding]
     super app, {timeout: 3, forbid_reuse: true}.merge(options)
   end
 
