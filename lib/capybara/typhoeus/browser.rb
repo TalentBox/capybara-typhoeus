@@ -86,8 +86,8 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
         opts[:httpauth] = :basic
         opts[:userpwd] = "#{driver.login}:#{driver.password}"
       end
+      opts[:params_encoding] = params.delete(:params_encoding) || driver.params_encoding
       opts[:params] = driver.with_params.merge(params)
-      opts[:params_encoding] = driver.params_encoding
       if request_body
         opts[:body] = request_body
         @request_body = nil

@@ -5,8 +5,8 @@ class Capybara::Typhoeus::Driver < Capybara::RackTest::Driver
 
   def initialize(app, options = {})
     raise ArgumentError, "typhoeus requires a rack application, but none was given" unless app
-    @params_encoding = options[:params_encoding]
     super app, {timeout: 3, forbid_reuse: true}.merge(options)
+    @params_encoding = :typhoeus
   end
 
   def browser
@@ -15,6 +15,15 @@ class Capybara::Typhoeus::Driver < Capybara::RackTest::Driver
 
   def needs_server?
     true
+  end
+
+  PARAMS_ENCODING_ALLOWED_VALUES = [:typhoeus, :rack, :multi, :none]
+  def params_encoding=(value)
+    if PARAMS_ENCODING_ALLOWED_VALUES.include?(value)
+      @params_encoding = value
+    else
+      raise ArgumentError, "Allowed values are: #{PARAMS_ENCODING_ALLOWED_VALUES.map(&:inspect).join(", ")}"
+    end
   end
 
   [:get, :post, :put, :delete, :head, :patch, :request].each do |method|

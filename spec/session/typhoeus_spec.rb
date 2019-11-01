@@ -37,6 +37,10 @@ Capybara::SpecHelper.run_specs TestSessions::TyphoeusTest, 'Typhoeus', capybara_
     skip "Typhoeus driver doesn't support #select"
   when /#unselect/
     skip "Typhoeus driver doesn't support #unselect"
+  when /#has_css\? with spatial requirements/
+    skip "Typhoeus driver doesn't support #has_css? with spatial requirements"
+  when /#find with spatial filters/
+    skip "Typhoeus driver doesn't support #find with spatial filters"
   when /has_css\? should support case insensitive :class and :id options/
     skip "Nokogiri doesn't support case insensitive CSS attribute matchers"
   end
@@ -88,6 +92,68 @@ RSpec.describe Capybara::Typhoeus::Session do
         subject.authenticate_with "admin", "admin"
         subject.get "/"
         expect( subject.status_code ).to be 401
+      end
+    end
+
+    context "params encoding" do
+      context "setting on driver" do
+        let(:driver) { session.driver }
+        it "defaults to :typhoeus" do
+          expect( driver.params_encoding ).to eq :typhoeus
+        end
+        it "can be set to :rack, :multi or :none" do
+          driver.params_encoding = :rack
+          expect( driver.params_encoding ).to eq :rack
+          driver.params_encoding = :multi
+          expect( driver.params_encoding ).to eq :multi
+          driver.params_encoding = :none
+          expect( driver.params_encoding ).to eq :none
+
+          expect do
+            driver.params_encoding = :unknown
+          end.to raise_error ArgumentError, "Allowed values are: :typhoeus, :rack, :multi, :none"
+        end
+      end
+      context "usage in requests" do
+        subject do
+          app = Sinatra.new do
+            get("/"){ params.inspect }
+          end
+          described_class.new :typhoeus, app
+        end
+        it "defaults to driver setting" do
+          subject.get "/", ids: [1, 2, 3]
+          expect( subject.body ).to eq '{"ids"=>{"0"=>"1", "1"=>"2", "2"=>"3"}}'
+
+          subject.driver.params_encoding = :rack
+          subject.get "/", ids: [1, 2, 3]
+          expect( subject.body ).to eq '{"ids"=>["1", "2", "3"]}'
+
+          subject.driver.params_encoding = :multi
+          subject.get "/", ids: [1, 2, 3]
+          expect( subject.body ).to eq '{"ids"=>"3"}'
+
+          subject.driver.params_encoding = :none
+          subject.get "/", ids: [1, 2, 3]
+          expect( subject.body ).to eq '{"ids"=>"[1, 2, 3]"}'
+        end
+        it "can be overriden per request" do
+          subject.driver.params_encoding = :none
+
+          subject.get "/", ids: [1, 2, 3], params_encoding: :typhoeus
+          expect( subject.body ).to eq '{"ids"=>{"0"=>"1", "1"=>"2", "2"=>"3"}}'
+
+          subject.get "/", ids: [1, 2, 3], params_encoding: :rack
+          expect( subject.body ).to eq '{"ids"=>["1", "2", "3"]}'
+
+          subject.get "/", ids: [1, 2, 3], params_encoding: :multi
+          expect( subject.body ).to eq '{"ids"=>"3"}'
+
+          subject.driver.params_encoding = :typhoeus
+
+          subject.get "/", ids: [1, 2, 3], params_encoding: :none
+          expect( subject.body ).to eq '{"ids"=>"[1, 2, 3]"}'
+        end
       end
     end
 
