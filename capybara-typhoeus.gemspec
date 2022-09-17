@@ -2,7 +2,7 @@
 
 Gem::Specification.new do |s|
   s.name = "capybara-typhoeus"
-  s.version = "0.6.0"
+  s.version = "0.7.0"
   s.authors = ["Joseph HALTER", "Jonathan TRON"]
   s.summary = "Typhoeus driver for Capybara"
   s.description = "Typhoeus driver for Capybara, allowing testing of REST APIs"
