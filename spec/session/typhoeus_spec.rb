@@ -22,6 +22,9 @@ skipped_tests = %i[
   download
   css
   scroll
+  active_element
+  html_validation
+  shadow_dom
 ]
 Capybara::SpecHelper.run_specs TestSessions::TyphoeusTest, 'Typhoeus', capybara_skip: skipped_tests do |example|
   case example.metadata[:full_description]
@@ -41,6 +44,8 @@ Capybara::SpecHelper.run_specs TestSessions::TyphoeusTest, 'Typhoeus', capybara_
     skip "Typhoeus driver doesn't support #has_css? with spatial requirements"
   when /#find with spatial filters/
     skip "Typhoeus driver doesn't support #find with spatial filters"
+  when /can set cookie if a blank path is specified/
+    skip "Typhoeus driver doesn't support cookie"
   when /has_css\? should support case insensitive :class and :id options/
     skip "Nokogiri doesn't support case insensitive CSS attribute matchers"
   end

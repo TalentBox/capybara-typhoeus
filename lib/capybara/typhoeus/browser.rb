@@ -36,7 +36,11 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
   end
 
   def current_url
-    last_response ? last_response.effective_url : ""
+    return "" unless last_response
+
+    uri = build_uri(last_response.effective_url)
+    uri.fragment = @current_fragment if @current_fragment
+    uri.to_s
   end
 
   def dom

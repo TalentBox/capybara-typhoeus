@@ -31,7 +31,7 @@ The following scenario will then be using the Typhoeus driver
 When you want to use this driver to test a remote application. You have to set the app_host:
 
     Capybara.app_host = "http://www.yourapp.com"
-    
+
 Note that I haven't tested this case for my self yet. The Capybara tests pass for this situation though so it should work! Please provide me with feedback if it doesn't.
 
 ## Running tests
@@ -58,11 +58,11 @@ Everything related to submitting forms, clicking buttons, clicking checkboxes or
 Build Status
 ---------
 
-[![Build Status](http://travis-ci.org/TalentBox/capybara-typhoeus.png)](http://travis-ci.org/TalentBox/capybara-typhoeus)
+![Build Status](https://github.com/TalentBox/capybara-typhoeus/actions/workflows/ci.yml/badge.svg)
 
 Note on Patches/Pull Requests
 -----------------------------
- 
+
 * Fork the project.
 * Make your feature addition or bug fix.
 * Add tests for it. This is important so I don't break it in a
