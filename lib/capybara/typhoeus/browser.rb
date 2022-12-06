@@ -46,7 +46,7 @@ class Capybara::Typhoeus::Browser < Capybara::RackTest::Browser
   def dom
     @dom ||= begin
       content_type = if last_response
-        last_response.headers["Content-Type"].to_s[/\A[^;]+/]
+        last_response.headers["Content-Type"].to_s[/\A[^;]+/] || ""
       else
         ""
       end
