@@ -128,36 +128,36 @@ RSpec.describe Capybara::Typhoeus::Session do
         end
         it "defaults to driver setting" do
           subject.get "/", ids: [1, 2, 3]
-          expect( subject.body ).to eq '{"ids"=>{"0"=>"1", "1"=>"2", "2"=>"3"}}'
+          expect( subject.body ).to eq({"ids" => {"0" => "1", "1" => "2", "2" => "3"}}.inspect)
 
           subject.driver.params_encoding = :rack
           subject.get "/", ids: [1, 2, 3]
-          expect( subject.body ).to eq '{"ids"=>["1", "2", "3"]}'
+          expect( subject.body ).to eq({"ids" => ["1", "2", "3"]}.inspect)
 
           subject.driver.params_encoding = :multi
           subject.get "/", ids: [1, 2, 3]
-          expect( subject.body ).to eq '{"ids"=>"3"}'
+          expect( subject.body ).to eq({"ids" => "3"}.inspect)
 
           subject.driver.params_encoding = :none
           subject.get "/", ids: [1, 2, 3]
-          expect( subject.body ).to eq '{"ids"=>"[1, 2, 3]"}'
+          expect( subject.body ).to eq({"ids" => "[1, 2, 3]"}.inspect)
         end
         it "can be overriden per request" do
           subject.driver.params_encoding = :none
 
           subject.get "/", ids: [1, 2, 3], params_encoding: :typhoeus
-          expect( subject.body ).to eq '{"ids"=>{"0"=>"1", "1"=>"2", "2"=>"3"}}'
+          expect( subject.body ).to eq({"ids" => {"0" => "1", "1" => "2", "2" => "3"}}.inspect)
 
           subject.get "/", ids: [1, 2, 3], params_encoding: :rack
-          expect( subject.body ).to eq '{"ids"=>["1", "2", "3"]}'
+          expect( subject.body ).to eq({"ids" => ["1", "2", "3"]}.inspect)
 
           subject.get "/", ids: [1, 2, 3], params_encoding: :multi
-          expect( subject.body ).to eq '{"ids"=>"3"}'
+          expect( subject.body ).to eq({"ids" => "3"}.inspect)
 
           subject.driver.params_encoding = :typhoeus
 
           subject.get "/", ids: [1, 2, 3], params_encoding: :none
-          expect( subject.body ).to eq '{"ids"=>"[1, 2, 3]"}'
+          expect( subject.body ).to eq({"ids" => "[1, 2, 3]"}.inspect)
         end
       end
     end
